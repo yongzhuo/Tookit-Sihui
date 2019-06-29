@@ -5,8 +5,7 @@
     - ml_common
       - TF-IDF
       - Trie-Tree
-      - HMM
-      - CRF
+      - func_recursive
 
 
 # run(运行)
