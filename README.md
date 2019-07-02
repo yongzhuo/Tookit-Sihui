@@ -6,6 +6,7 @@
       - TF-IDF
       - Trie-Tree
       - func_recursive
+      - chinese_and_number
 
 
 # run(运行)
