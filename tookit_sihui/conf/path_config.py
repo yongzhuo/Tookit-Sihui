@@ -17,3 +17,4 @@ print(projectdir)
 
 # tf_ifdf
 path_tf_idf_corpus = projectdir.replace('\\', '/') + '/data/tf_idf/wiki_corpus_10.txt'
+path_tf_idf_freq = projectdir.replace('\\', '/') + '/data/tf_idf_freq/'

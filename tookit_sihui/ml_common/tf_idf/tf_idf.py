@@ -71,7 +71,8 @@ def count_tf_idf(freq_char, freq_document, ndigits=12, smooth =0):
     # tf
     tf_char = {}
     for k2, v2 in freq_char.items():
-        tf_char[k2] = round((v2 + smooth)/(len_tf + smooth), ndigits)
+        # tf_char[k2] = round((v2 + smooth)/(len_tf + smooth), ndigits)
+        tf_char[k2] = round(v2, ndigits)
     # idf
     idf_char = {}
     for ki, vi in freq_document.items():
@@ -162,11 +163,21 @@ def load_tf_idf_json(path_tf_freq=None, path_idf_freq=None, path_tf=None, path_i
     :param path_tf_idf: 
     :return: 
     """
-    json_tf_freq = load_json(path_tf_freq)
-    json_idf_freq = load_json(path_idf_freq)
-    json_tf = load_json(path_tf)
-    json_idf = load_json(path_idf)
-    json_tf_idf = load_json(path_tf_idf)
+    json_tf_freq = [[]]
+    json_idf_freq = [[]]
+    json_tf = [[]]
+    json_idf = [[]]
+    json_tf_idf = [[]]
+    if path_tf_freq:
+        json_tf_freq = load_json(path_tf_freq)
+    if path_idf_freq:
+        json_idf_freq = load_json(path_idf_freq)
+    if path_tf:
+        json_tf = load_json(path_tf)
+    if path_idf:
+        json_idf = load_json(path_idf)
+    if path_tf_idf:
+        json_tf_idf = load_json(path_tf_idf)
     return json_tf_freq[0], json_idf_freq[0], json_tf[0], json_idf[0], json_tf_idf[0]
 
 
@@ -303,12 +314,12 @@ def create_TFIDF(path):
     import time
     time_start = time.time()
     # 首先输入全部文本构建tf-idf,然后再拿去用
-    from tookit_sihui.conf.path_config import path_tf_idf_corpus
+    from tookit_sihui.conf.path_config import path_tf_idf_corpus, path_tf_idf_freq
     from tookit_sihui.utils.file_utils import txt_write, txt_read
 
     path_wiki = path if path else path_tf_idf_corpus
     #  测试1, tf-idf, 调用
-    path_dir = 'tf_idf_freq/'
+    path_dir = path_tf_idf_freq # 'tf_idf_freq/'
     # ques = ['大漠帝国最强', '花落惊飞羽最漂亮', '紫色Angle最有气质', '孩子气最活泼', '口袋巧克力和过路蜻蜓最好最可爱啦', '历历在目最烦恼']
     # questions = [list(q.strip()) for q in ques]
     # questions = [list(jieba.cut(que)) for que in ques]
