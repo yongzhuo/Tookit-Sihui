@@ -5,11 +5,14 @@
 # @function :
 
 
+from collections import Counter
 import jieba
 
 
 class BM25:
-    def __init__(self, questions=None, path_tf=None, path_idf=None, path_tf_idf=None):
+    def __init__(self, questions=None,
+                       path_tf=None, path_idf=None, path_tf_idf=None,
+                       param_k = 1.5, param_b = 0.75, epsilon = 0.25, avgdl = 100):
         """
             统计字频,或者词频tf
         :param questions: list, 输入语料, 字级别的例子:[['我', '爱', '你'], ['爱', '护', '士']]
@@ -18,10 +21,10 @@ class BM25:
         self.path_tf=path_tf
         self.path_idf=path_idf
         self.path_tf_idf=path_tf_idf
-        self.param_k = 1.5
-        self.param_b = 0.75
-        self.epsilon = 0.25
-        self.avgdl = 100
+        self.param_k = param_k
+        self.param_b = param_b
+        self.epsilon = epsilon
+        self.avgdl = avgdl
         self.create_tfidf()
 
     def create_tfidf(self):
@@ -39,21 +42,29 @@ class BM25:
         self.chars = [idf for idf in self.idf.keys()]
         self.lens = len(self.chars)
 
-    def bm25_sim(self, sentence):
+    def bm25_sim(self, sentence, use_current=False):
         """
             bm25分数
         :param sentence: 
         :return: 
         """
         sentences = list(jieba.cut(sentence))
+        if use_current:
+            self.tf_current = Counter(sentences)
         score = 0
         for word in sentences:
             if word in self.chars:
-                tf = self.tf[word]
+                if use_current:
+                    tf = self.tf_current[word]
+                else:
+                    tf = self.tf[word]
                 idf = self.idf[word]
             else:
-                tf = self.epsilon * 1e-12
-                idf = self.epsilon
+                if use_current:
+                    tf = self.tf_current[word]
+                else:
+                    tf = self.epsilon * 1e-12
+                idf = self.idf['[AVG]']
             score += (idf*tf*(self.param_k+1)
                       / (tf+self.param_k*(1-self.param_b+self.param_b*self.lens
                      / self.avgdl)))
@@ -79,7 +90,7 @@ if __name__ == '__main__':
     path_idf = path_dir + '/idf.json'
     path_tf_idf = path_dir + '/tf_idf.json'
     bm25 = BM25(path_tf=path_tf, path_idf=path_idf, path_tf_idf=path_tf_idf)
-    print(bm25.bm25_sim('打磨丢哦'))
+    print(bm25.bm25_sim('打磨丢哦 QWE', use_current=True))
 
     while True:
         print('请输入:')
