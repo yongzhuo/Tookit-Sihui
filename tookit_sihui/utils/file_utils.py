@@ -2,8 +2,11 @@
 # !/usr/bin/python
 # @time     :2019/6/20 11:39
 # @author   :Mo
-# @function :
+# @function :utils of file tools
+
+
 import logging as logger
+import json
 
 
 def txt_read(file_path, encode_type='utf-8'):
@@ -44,3 +47,64 @@ def txt_write(list_line, file_path, type='w', encode_type='utf-8'):
 
     except Exception as e:
         logger.info(str(e))
+
+
+def save_json(res, path_json):
+    """
+        保存lsit[json]
+    :param res: 
+    :param path_json: 
+    :return: 
+    """
+    with open(path_json, mode='w+', encoding='utf-8') as fpj:
+        json.dump(res, fpj, ensure_ascii=False)
+        fpj.close()
+
+
+def load_json(path_json):
+    """
+        下载lsit[json]
+    :param path_json: 
+    :return: 
+    """
+    with open(path_json, mode='r', encoding='utf-8') as fpj:
+        list_json = json.load(fpj)
+        fpj.close()
+    return list_json
+
+
+def load_float_from_txt(path):
+    """
+    # 从txt下载词-数据    
+    :param path: 
+    :return: 
+    """
+    term_score_dict = {}
+    terms_score = txt_read(path)
+    for term_score in terms_score:
+        term_score_sp = term_score.split('\t')
+        term_score_dict[term_score_sp[0]] = float(term_score_dict[1].strip())
+    return term_score_dict
+
+
+def load_float_from_json(path):
+    """
+        # 从json下载词-数据
+    :param path: 
+    :return: 
+    """
+    term_score_dict = {}
+    terms_score = txt_read(path)
+    for term_score in terms_score:
+        term_score_sp = term_score.split('\t')
+        term_score_dict[term_score_sp[0]] = float(term_score_dict[1].strip())
+    return term_score_dict
+
+
+if __name__ == '__main__':
+    # list_json = load_json('list_json.json')
+    data = {}
+    data["100"]=1000
+    list_json = [{"你好":10, "我i是谁":1000000}]
+    json_str = json.dumps(data)
+    save_json(list_json, 'list_json.json')
