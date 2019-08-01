@@ -3,6 +3,7 @@
 
 # tookit_sihui（代码主体,未完待续...）
     - ml_common
+      - BM25
       - TF-IDF
       - Trie-Tree
       - func_recursive
