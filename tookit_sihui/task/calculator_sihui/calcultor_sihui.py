@@ -5,7 +5,7 @@
 # @function :an ai text calcultor of xiaomo
 
 
-from tookit_sihui.task.calculator_sihui.calcultor_function import reagan, power, logarithm, fraction, factorial, fractiontwo
+from tookit_sihui.task.calculator_sihui.calcultor_function import rackets_replace, reagan, power, logarithm, fraction, factorial, fractiontwo
 from tookit_sihui.task.calculator_sihui.calcultor_number import extract_number, sph
 from tookit_sihui.task.calculator_sihui.calcultor_formula import result_formula
 from tookit_sihui.conf.logger_config import get_logger_root
@@ -29,11 +29,14 @@ def StringToCalculateZero(words=''):
     wordsmult = wordsminus.replace("阶乘", "jiecheng的").replace("乘上", "*").replace("乘以", "*").replace("乘于","*").replace("乘", "*").replace("×", "*")
     wordsdivis01 = wordsmult.replace("除去", "/").replace("除以", "/").replace("除于", "/").replace("除","/").replace("÷", "/")
     wordsdivis02 = wordsdivis01.replace("从", "").replace("再", "").replace("在", "").replace("然后", "").replace("直", "").replace("到", "")
-    formula = wordsdivis02.replace("左括号", "(").replace("右括号", "(").replace("的和", "").replace("的差", "").replace("的商", "").replace("的积", "")
-    myformula = formula.replace("*-", "*(-1)*").replace("\\*\\+", "*").replace("\\/\\-", "/(-1)/")
-    stringtocalculatezero = myformula.replace(" ", "").replace("\\+\\-", "\\-").replace("\\+\\+", "\\+").replace("\\-\\+", "\\-").replace("\\-\\-", "\\+")
+    wordbrackets = wordsdivis02.replace("（", "(").replace("）", ")").replace("=", "").replace("=", "")
+    formula = wordbrackets.replace("左括号", "(").replace("右括号", "(").replace("的和", "").replace("的差", "").replace("的商", "").replace("的积", "")
+    myformula_1 = formula.replace("*-", "*(-1)*").replace("\\*\\+", "*").replace("\\/\\-", "/(-1)/")
+    myformula_2 = myformula_1.replace(" ", "").replace("\\+\\-", "\\-").replace("\\+\\+", "\\+").replace("\\-\\+", "\\-").replace("\\-\\-", "\\+")
+    myformula_2 = rackets_replace("(", myformula_2)
+    myformula_2 = rackets_replace(")", myformula_2)
 
-    return stringtocalculatezero
+    return myformula_2
 
 
 def StringToCalculateOne(words):
@@ -148,6 +151,8 @@ def calculator_sihui(sentence = ''):
     """
     # 运算符转换
     sentence_wise    = StringToCalculateZero(sentence)
+    if not sentence_wise:
+        return sentence
     # 混合运算
     sentence_replace = StringToCalculateTwo(sentence_wise)
     if ('/0' in sentence_replace and '/0.' not in sentence_replace) or sentence_replace == 'illegal math':
@@ -162,6 +167,9 @@ def calculator_sihui(sentence = ''):
 
 if __name__ == "__main__":
     equation_sample = [
+            '',
+            '2(3*4)6+4(4)4',
+            '（1+2）=',
             '1+2等于几',
             '100+30',
             '111+90-9等于几',
@@ -203,6 +211,7 @@ if __name__ == "__main__":
             '1的平方加根号2',
             '30的阶乘加90',
             '二分之一加1/3',
+            ''
         ]
 
     for es in equation_sample:

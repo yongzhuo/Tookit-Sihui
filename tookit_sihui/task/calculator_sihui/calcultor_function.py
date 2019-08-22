@@ -8,9 +8,41 @@
 from tookit_sihui.task.calculator_sihui.calcultor_number import extract_number
 from tookit_sihui.conf.logger_config import get_logger_root
 import math
+import re
 
 
 logger = get_logger_root()
+
+
+
+def rackets_replace(rackets_char, myformula):
+    """
+        将2(3换成2*(3, 3)4换成3)*4
+    :param rackets_char: 
+    :param myformula: 
+    :return: 
+    """
+    if rackets_char in myformula: # "("在算式里边
+        if rackets_char =="(":
+            rackets_re = r'\('
+        else:
+            rackets_re = r'\)'
+        pos_rackets = re.finditer(rackets_re, myformula)
+        count = 0
+        for pos in pos_rackets:
+            pos_single = pos.start() + count
+            if pos_single != 0 and rackets_char =="(":
+                if myformula[pos_single-1] in '零一二两三四五六七八九0123456789百十千万亿':
+                    myformula = myformula[:pos_single] + "*" + myformula[pos_single:]
+                    count += 1
+            if pos_single != len(myformula)-1 and rackets_char ==")":
+                if myformula[pos_single+1] in '零一二两三四五六七八九0123456789百十千万亿':
+                    myformula = myformula[:pos_single+1] + "*" + myformula[pos_single+1:]
+                    count += 1
+        return myformula
+    else:
+        return myformula
+
 
 
 def reagan(words, wordsminus):
