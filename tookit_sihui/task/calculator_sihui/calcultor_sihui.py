@@ -22,7 +22,7 @@ def StringToCalculateZero(words=''):
     :return: str
     """
     wordsspot = words.replace("点", ".")
-    wordsmark = wordsspot.replace("分之", "/")
+    wordsmark = wordsspot.replace("分之", "fenzhi")
     wordsin = wordsmark.replace("正切", "zheng切").replace("正弦", "zheng弦").replace("正割", "zheng割").replace("正矢", "zheng矢")
     wordsadd = wordsin.replace("加上", "+").replace("加到", "+").replace("加", "+").replace("＋", "+").replace("正", "+")
     wordsminus = wordsadd.replace("减去", "-").replace("减", "-").replace("－", "-").replace("负", "-")

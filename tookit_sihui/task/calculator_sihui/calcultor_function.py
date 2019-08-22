@@ -162,7 +162,7 @@ def fractiontwo(words, wordsminus):
             root = fenzhi.split("/")
             rootaa = float(extract_number(root[0])[0])
             rootbb = float(extract_number(root[1])[0])
-            results = str(rootaa) + "/" + str(rootbb)
+            results = str(rootaa/rootbb)
         else:
             results = words
         return results
