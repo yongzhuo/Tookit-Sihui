@@ -149,7 +149,8 @@ class chinese_to_number():
         assert type(text) == str
         self.result = 0.0
         self.result_last = 0.0
-
+        if not text.strip():
+            return self.result_last
         text = text.replace("兆", "万亿").replace("点", ".").strip(".").strip()
         len_text = len(text)
         # 判断十百千万在不在text里边，在的话就走第二个
@@ -239,12 +240,12 @@ class number_to_chinese():
     def __init__(self):
         self.result = ""
 
-    def number_to_str(self, data):
-        assert type(data) == float or int
+    def number_to_str_10000(self, data_str):
+        """一万以内的数转成大写"""
         res = []
         count = 0
         # 倒转
-        str_rev = reversed(str(data))  # seq -- 要转换的序列，可以是 tuple, string, list 或 range。返回一个反转的迭代器。
+        str_rev = reversed(data_str)  # seq -- 要转换的序列，可以是 tuple, string, list 或 range。返回一个反转的迭代器。
         for i in str_rev:
             if i is not "0":
                 count_cos = count // 4  # 行
@@ -265,6 +266,27 @@ class number_to_chinese():
             res.pop()
 
         return "".join(res)
+
+    def number_to_str(self, data):
+        """分段转化"""
+        assert type(data) == float or int
+        data_str = str(data)
+        len_data = len(str(data_str))
+        count_cos = len_data // 4  # 行
+        count_col = len_data-count_cos*4  # 列
+        if count_col > 0: count_cos += 1
+
+        res = ""
+        for i in range(count_cos):
+            if i==0:
+                data_in = data_str[-4:]
+            elif i==count_cos-1 and count_col>0:
+                data_in = data_str[:count_col]
+            else:
+                data_in = data_str[-(i+1)*4:-(i*4)]
+            res_ = self.number_to_str_10000(data_in)
+            res = res_ + unit_map[i][0] + res
+        return res
 
     def decimal_chinese(self, data):
         assert type(data) == float or int
@@ -302,7 +324,7 @@ def judge_compose_integer(data_json):
 
 if __name__=="__main__":
     ctn = chinese_to_number()
-    ques = "十9.14六"
+    ques = "点二八"
     print(ctn.compose_decimal(ques))
 
     ######  1.测试阿拉伯数字转中文  ######################################################
